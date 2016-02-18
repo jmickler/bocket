@@ -17,6 +17,7 @@ class CreateTagsTable extends Migration
             $table->timestamps();
             $table->string('name');
             $table->integer('user_id')->unsigned();
+            $table->integer('bookmark_id')->unsigned()->nullable();
         });
     }
 
