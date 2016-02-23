@@ -15,6 +15,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::resource('bookmarks', 'BookmarkController', [
+	'except' => ['edit', 'create']
+	]);
+
+Route::resource('tags', 'TagController', [
+	'except' => ['edit', 'create']
+	]);
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
