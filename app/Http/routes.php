@@ -11,17 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::resource('bookmarks', 'BookmarkController', [
-	'except' => ['edit', 'create']
-	]);
-
-Route::resource('tags', 'TagController', [
-	'except' => ['edit', 'create']
-	]);
 
 /*
 |--------------------------------------------------------------------------
@@ -35,11 +25,29 @@ Route::resource('tags', 'TagController', [
 */
 
 Route::group(['middleware' => ['web']], function () {
-    //
+    Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::resource('bookmarks', 'BookmarkController', [
+	'only' => ['index', 'show']
+	]);
+
+Route::resource('tags', 'TagController', [
+	'only' => ['index', 'show']
+	]);
 });
 
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
     Route::get('/home', 'HomeController@index');
+
+    Route::resource('bookmarks', 'BookmarkController', [
+	'except' => ['edit', 'create']
+	]);
+
+	Route::resource('tags', 'TagController', [
+	'except' => ['edit', 'create']
+	]);
 });
