@@ -36,7 +36,7 @@ class TagController extends Controller
     {
         $tag = new \App\Tag;
         $tag->name = $request->name;
-        $tag->user_id = Auth::user()->id;
+        $tag->user_id = \Auth::user()->id;
         $tag->bookmark_id = $request->bookmark_id;
        
         $tag->save();
@@ -75,10 +75,13 @@ class TagController extends Controller
     public function update(Request $request, $id)
     {
         $tag = \App\Tag::find($id);
+        if ($tag->user_id == Auth::user()->id) {
         $tag->name = $request->name;
-        $tag->user_id = Auth::user()->id;
         $tag->bookmark_id = $request->bookmark_id;
         $tag->save();
+    } else {
+        return response("Unauthorized", 403);
+    }
         
         return $tag;
     }
@@ -92,7 +95,11 @@ class TagController extends Controller
     public function destroy($id)
     {
         $tag = \App\Tag::find($id);
+        if ($tag->user_id == Auth::user()->id) {
         $tag->delete();
         return $tag;
+        } else {
+            return response("Unauthorized", 403);
+        }
     }
 }

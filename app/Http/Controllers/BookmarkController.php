@@ -16,7 +16,7 @@ class BookmarkController extends Controller
      */
     public function index()
     {
-        return \App\Bookmark::all();
+        return \App\Bookmark::orderBy('id', 'desc')->get();
     }
 
     /**
@@ -73,11 +73,14 @@ class BookmarkController extends Controller
     public function update(Request $request, $id)
     {
         $bookmark = \App\Bookmark::find($id);
-        $bookmark->user_id = Auth::user()->id;
+        if ($bookmark->user_id == Auth::user()->id) {
         $bookmark->url = $request->url;
         $bookmark->save();
-
+    } else {
+        return response("Unauthorized", 403);
+    }
         return $bookmark;
+    
     }
 
     /**
@@ -89,7 +92,11 @@ class BookmarkController extends Controller
     public function destroy($id)
     {
         $bookmark = \App\Bookmark::find($id);
+        if ($bookmark->user_id == Auth::user()->id) {
         $bookmark->delete();
+        } else {
+            return response("Unauthorized", 403);
+        }
         return $bookmark;
         
     }

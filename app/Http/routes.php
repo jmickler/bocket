@@ -11,7 +11,9 @@
 |
 */
 
-
+Route::get('/', function () {
+    return view('welcome');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -24,30 +26,32 @@
 |
 */
 
-Route::group(['middleware' => ['web']], function () {
-    Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::resource('bookmarks', 'BookmarkController', [
-	'only' => ['index', 'show']
-	]);
-
-Route::resource('tags', 'TagController', [
-	'only' => ['index', 'show']
-	]);
-});
-
 Route::group(['middleware' => 'web'], function () {
-    Route::auth();
+	Route::auth();
 
-    Route::get('/home', 'HomeController@index');
+	Route::get('/home', 'HomeController@index');
 
-    Route::resource('bookmarks', 'BookmarkController', [
-	'except' => ['edit', 'create']
-	]);
+	Route::group(['prefix' => 'api'], function () {
 
-	Route::resource('tags', 'TagController', [
-	'except' => ['edit', 'create']
-	]);
+		Route::resource('bookmarks', 'BookmarkController', [
+			'only' => ['index', 'show']
+			]);
+
+		Route::resource('tags', 'TagController', [
+			'only' => ['index', 'show']
+			]);
+
+		Route::group(['middleware' => 'auth'], function () {
+
+		    Route::get('/home', 'HomeController@index');
+
+		    Route::resource('bookmarks', 'BookmarkController', [
+			'only' => ['store', 'update', 'destroy']
+			]);
+
+			Route::resource('tags', 'TagController', [
+			'only' => ['store', 'update', 'destroy']
+			]);
+	   });
+    });
 });
